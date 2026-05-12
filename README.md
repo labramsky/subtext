@@ -1,12 +1,13 @@
 # Subtext
 
-An evaluation suite for detecting misogyny and sexism in large language model outputs.
+An [Inspect AI](https://inspect.ai-safety-institute.org.uk/) evaluation suite for
+measuring whether large language models produce implicit misogynistic content.
 
 ## What Subtext Evaluates
 
-Subtext measures the tendency of LLMs to produce or reinforce sexist and misogynistic
-content across a range of prompt types. Scoring is grounded in two validated frameworks
-from the academic literature (see [Theoretical Basis](#theoretical-basis)):
+Subtext measures the tendency of LLMs to produce misogynistic content across a range
+of prompt types. Scoring is grounded in the Guest et al. (2021) taxonomy
+(see [Theoretical Basis](#theoretical-basis)):
 
 - **Misogynistic pejoratives** — explicit slurs and implicit manosphere vocabulary
 - **Misogynistic treatment** — threatening language and disrespectful portrayals of how women should be treated
@@ -38,11 +39,6 @@ This matters for four reasons:
    gives them a tool for a class of harm that currently has no rigorous benchmark.
 4. **Model differentiation.** As models improve at avoiding explicit content, implicit
    abuse becomes the meaningful axis of comparison between them.
-
-Glick & Fiske (2011) provide additional grounding: benevolent sexism — ostensibly
-positive, protective attitudes toward women — is paternalistic prejudice that predicts
-real harm (rape-victim blaming, reduced workplace performance, system justification)
-and is invisible to safety filters optimised for hostile content.
 
 ## Research Contribution
 
@@ -89,25 +85,14 @@ automated detection come from **implicit derogation** and **context-dependent co
 — exactly the cases where LLM outputs are most likely to be harmful yet hardest to
 catch with keyword matching alone.
 
-### Glick & Fiske (1996, 1997, 2011) — Ambivalent Sexism Theory
+## Dependencies
 
-> Peter Glick and Susan T. Fiske. "Hostile and Benevolent Sexism: Measuring Ambivalent
-> Sexist Attitudes Toward Women." *Psychology of Women Quarterly*, 21(1):119–135, 1997.
-> https://doi.org/10.1111/j.1471-6402.1997.tb00104.x
-
-> Peter Glick and Susan T. Fiske. "Ambivalent Sexism Revisited."
-> *Psychology of Women Quarterly*, 35(3), 2011.
-> https://doi.org/10.1177/0361684311414832
-
-Provides the hostile/benevolent sexism distinction applied to LLM output scoring.
-Hostile sexism (HS) and benevolent sexism (BS) are complementary, not opposed:
-cross-culturally, national averages on HS and BS correlate ~0.9. BS is not a
-progressive attitude — it is a paternalistic prejudice that maintains gender
-hierarchy via reward rather than punishment.
-
-This matters for LLM evaluation because models are likely to produce more BS than HS
-(appearing helpful and positive while still being sexist), and standard safety filters
-optimised for hostile content will miss it.
+- [Python](https://www.python.org/) >= 3.12
+- [uv](https://docs.astral.sh/uv/) — package manager
+- [inspect-ai](https://inspect.ai-safety-institute.org.uk/) — evaluation framework
+- [ruff](https://docs.astral.sh/ruff/) — linter
+- [mypy](https://mypy-lang.org/) — type checker
+- [pytest](https://pytest.org/) — test framework
 
 ## Setup
 
