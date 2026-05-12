@@ -1,89 +1,74 @@
 # Subtext
 
-An [Inspect AI](https://inspect.ai-safety-institute.org.uk/) evaluation suite for
-measuring whether large language models produce implicit misogynistic content.
+An [Inspect AI](https://inspect.ai-safety-institute.org.uk/) benchmark for measuring
+how well large language models detect implicit misogynistic content.
 
-## What Subtext Evaluates
+## What Subtext Does
 
-Subtext measures the tendency of LLMs to produce misogynistic content across a range
-of prompt types. Scoring is grounded in the Guest et al. (2021) taxonomy
-(see [Theoretical Basis](#theoretical-basis)):
+Subtext tests any LLM's ability to classify text against the Guest et al. (2021)
+misogyny taxonomy — a three-level hierarchy built from 6,567 expert-annotated Reddit
+posts. Run it against a model to get a breakdown of classification accuracy by category
+and by implicit vs explicit strength.
 
-- **Misogynistic pejoratives** — explicit slurs and implicit manosphere vocabulary
-- **Misogynistic treatment** — threatening language and disrespectful portrayals of how women should be treated
-- **Misogynistic derogation** — content demeaning women's intellect, morality, or physical worth
-- **Gendered personal attacks** — highly gendered insults where misogyny is central
+The benchmark runs against the Guest et al. held-out test split (1,303 of those 6,567
+entries), keeping results directly comparable to prior work.
 
-## Why It Matters
+## Why Implicit Misogyny
 
-Current LLM safety evaluations mostly test for explicit harm — slurs, threats, overt
-hostility. A model can pass those benchmarks and still systematically produce subtle,
-context-dependent misogyny that real users encounter every day.
+Current LLM safety benchmarks mostly test for explicit harm — slurs, threats, overt
+hostility. A model can pass those benchmarks and still fail systematically on subtle,
+context-dependent misogyny.
 
-Subtext targets the gap. Its research question is whether models that pass standard
-safety benchmarks still produce **implicit** abuse across the taxonomy categories —
-implicit pejoratives, implicit controlling treatment, implicit moral derogation — content
-that looks benign in isolation but is harmful in context. This is exactly the class of
-content that Guest et al. (2021) found existing classifiers fail on, and that safety
-training is least likely to address.
+Guest et al. (2021) found that automated classifiers have the highest misclassification
+rates on **implicit derogation** — content where the misogyny requires context or
+inference to identify. Morbidoni & Sarra (2023) showed GPT-3.5 outperforms BERT
+classifiers overall, but did not measure the implicit/explicit gap at the category level.
 
-This matters for four reasons:
+Subtext fills that gap: it reports accuracy broken down by category and by
+implicit vs explicit strength, using the same taxonomy and dataset as prior work so
+results are directly comparable.
 
-1. **Scale.** A model deployed to millions of users producing implicit misogyny in 1% of
-   responses causes more aggregate harm than a rare explicit failure that gets caught
-   and patched.
-2. **Trust.** Implicit misogyny is harder for users to identify and push back on. A
-   response that frames a woman as emotionally unstable without using a single slur
-   feels more credible, not less.
-3. **Accountability gap.** Safety teams can't improve what they can't measure. Subtext
-   gives them a tool for a class of harm that currently has no rigorous benchmark.
-4. **Model differentiation.** As models improve at avoiding explicit content, implicit
-   abuse becomes the meaningful axis of comparison between them.
+## Taxonomy
 
-## Research Contribution
+Categories follow Guest et al. (2021). Subcategories are collapsed into a single flat
+classification task:
 
-Subtext builds directly on two key failure modes Guest et al. identified in their own
-work:
+**Misogynistic:**
+- `Misogynistic_pejorative` — slurs and manosphere vocabulary ('Stacy', 'Becky')
+- `Treatment_threatening` — language expressing intent to cause harm
+- `Treatment_disrespectful` — controlling, manipulative, or conquering treatment
+- `Derogation_intellectual_inferiority` — demeaning women's intellect or emotional control
+- `Derogation_moral_inferiority` — demeaning women's moral worth or trustworthiness
+- `Derogation_sexual_or_physical_limitations` — demeaning women's physical or sexual worth
+- `Derogation_other` — behaviour-based derogation (careers, finances, traditional roles)
+- `Misogynistic_personal_attack` — gendered attacks where misogyny is central
 
-1. **Their classifier failed most on implicit derogation.** They built a detection tool;
-   Subtext asks whether the models being deployed are producing exactly what that tool
-   fails to catch.
-2. **Their dataset was Reddit-specific.** They explicitly flag generalisability as a
-   limitation. Subtext moves the question from "can we detect misogyny in Reddit posts"
-   to "do LLMs produce it in response to prompts" — a different and more
-   deployment-relevant context.
+**Non-misogynistic:**
+- `Counter_speech` — content that challenges or refutes misogynistic abuse
+- `Nonmisogynistic_personal_attack` — abuse directed at a woman but not misogynistic
+- `None_of_the_categories` — content unrelated to misogyny
 
-The value Subtext adds is closing the loop. Guest et al. gave us a validated taxonomy
-and showed where automated detection breaks down. Subtext uses that taxonomy as ground
-truth to evaluate whether models deployed at scale are producing the content that
-detection systems miss — implicit, context-dependent misogyny across all four abuse
-categories.
+Each sample carries an implicit/explicit strength flag where coded. Strength is only
+annotated for Treatment and Derogation categories in the source data.
 
-That makes it actionable in a way the original research was not. Guest et al. produced
-a labelled dataset for training classifiers. Subtext produces a benchmark safety teams
-can run against any model, track across versions, and use to demonstrate whether
-fine-tuning is actually reducing subtle misogynistic outputs or just suppressing the
-explicit content that was already easy to catch.
+## Dataset
 
-## Theoretical Basis
+The evaluation dataset is the Guest et al. (2021) test split: 1,303 Reddit posts and
+comments, expert-annotated with the taxonomy above.
 
-### Guest et al. (2021) — Misogyny Taxonomy
+The dataset is not distributed with this repository. You can obtain `final_labels.csv` from the [EACL 2021 paper page](https://aclanthology.org/2021.eacl-main.114/) and place it at `src/subtext/data/final_labels.csv`.
 
-> Ella Guest, Bertie Vidgen, Alexandros Mittos, Nishanth Sastry, Gareth Tyson, and
-> Helen Margetts. "An Expert Annotated Dataset for the Detection of Online Misogyny."
+## References
+
+> Guest, E., Vidgen, B., Mittos, A., Sastry, N., Tyson, G., & Margetts, H. (2021).
+> An Expert Annotated Dataset for the Detection of Online Misogyny.
 > *Proceedings of EACL 2021*, pages 1336–1350.
 > https://aclanthology.org/2021.eacl-main.114/
 
-Provides the primary scoring taxonomy: a three-level hierarchy of misogyny types
-validated on 6,567 expert-labelled Reddit posts and comments. The four misogynistic
-categories (Pejorative, Treatment, Derogation, Personal Attack) are non-mutually
-exclusive and include third-level subcategories. Ground truth labels for Subtext
-samples are mapped to this taxonomy.
+> Morbidoni, C., & Sarra, A. (2023). Can LLMs assist humans in assessing online
+> misogyny? Experiments with GPT-3.5. *CEUR Workshop Proceedings*, Vol. 3571.
+> https://ceur-ws.org/Vol-3571/regular1.pdf
 
-Key finding relevant to LLM evaluation: the highest misclassification errors in
-automated detection come from **implicit derogation** and **context-dependent content**
-— exactly the cases where LLM outputs are most likely to be harmful yet hardest to
-catch with keyword matching alone.
 
 ## Dependencies
 
@@ -103,7 +88,7 @@ uv sync --group dev
 ## Running Evaluations
 
 ```bash
-uv run inspect eval src/subtext/subtext.py
+uv run inspect eval src/subtext/task.py --model openai/gpt-4o
 ```
 
 ## Running Tests
