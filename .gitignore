@@ -8,3 +8,4 @@ logs/
 *.egg-info/
 dist/
 src/subtext/data/
+.claude/
