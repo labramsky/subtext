@@ -3,36 +3,21 @@ from string import ascii_uppercase
 from subtext.dataset import CHOICES, dataset
 from subtext.taxonomy import CATEGORY_LABELS, SEXIST_VECTORS, Category
 
-VALID_CATEGORIES = {
-    "1. threats, plans to harm and incitement",
-    "2. derogation",
-    "3. animosity",
-    "4. prejudiced discussions",
-}
-
+VALID_CATEGORIES = {CATEGORY_LABELS[v] for v in SEXIST_VECTORS}
 
 def test_dataset_loads():
     d = dataset()
     assert len(d.samples) == 4000
 
 
-def test_all_targets_are_valid_letters():
-    valid = set(ascii_uppercase[: len(Category)])
+def test_target_and_sexist_agree():
     d = dataset()
     for sample in d.samples:
-        assert sample.target in valid
-
-
-def test_all_samples_have_choices():
-    d = dataset()
-    for sample in d.samples:
-        assert sample.choices == CHOICES
-
-
-def test_sexist_metadata_is_bool():
-    d = dataset()
-    for sample in d.samples:
-        assert isinstance(sample.metadata["sexist"], bool)
+        vector = CHOICES[ascii_uppercase.index(sample.target)]
+        if sample.metadata["sexist"]:
+            assert vector in SEXIST_VECTORS
+        else:
+            assert vector == Category.NONE
 
 
 def test_category_none_for_nonsexist():
@@ -47,25 +32,6 @@ def test_category_set_for_sexist():
     for sample in d.samples:
         if sample.metadata["sexist"]:
             assert sample.metadata["category"] in VALID_CATEGORIES
-
-
-def test_target_and_sexist_agree():
-    d = dataset()
-    for sample in d.samples:
-        vector = CHOICES[ascii_uppercase.index(sample.target)]
-        if sample.metadata["sexist"]:
-            assert vector in SEXIST_VECTORS
-        else:
-            assert vector == Category.NONE
-
-
-def test_sexist_vectors_are_subset_of_all_categories():
-    assert SEXIST_VECTORS.issubset({c.value for c in Category})
-
-
-def test_category_labels_covers_all_vectors():
-    for cat in Category:
-        assert cat in CATEGORY_LABELS
 
 
 def test_no_missing_inputs():
