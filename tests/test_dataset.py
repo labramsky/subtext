@@ -1,4 +1,6 @@
-from subtext.dataset import dataset
+from string import ascii_uppercase
+
+from subtext.dataset import CHOICES, dataset
 from subtext.taxonomy import CATEGORY_LABELS, SEXIST_VECTORS, Category
 
 VALID_CATEGORIES = {
@@ -11,15 +13,20 @@ VALID_CATEGORIES = {
 
 def test_dataset_loads():
     d = dataset()
-    print('d.samples', d.samples[0])
     assert len(d.samples) == 4000
 
 
-def test_all_targets_are_valid_categories():
+def test_all_targets_are_valid_letters():
+    valid = set(ascii_uppercase[: len(Category)])
     d = dataset()
-    valid = {c.value for c in Category}
     for sample in d.samples:
-        assert sample.target in valid, f"unexpected target: {sample.target}"
+        assert sample.target in valid
+
+
+def test_all_samples_have_choices():
+    d = dataset()
+    for sample in d.samples:
+        assert sample.choices == CHOICES
 
 
 def test_sexist_metadata_is_bool():
@@ -45,10 +52,11 @@ def test_category_set_for_sexist():
 def test_target_and_sexist_agree():
     d = dataset()
     for sample in d.samples:
+        vector = CHOICES[ascii_uppercase.index(sample.target)]
         if sample.metadata["sexist"]:
-            assert sample.target in SEXIST_VECTORS
+            assert vector in SEXIST_VECTORS
         else:
-            assert sample.target == Category.NONE
+            assert vector == Category.NONE
 
 
 def test_sexist_vectors_are_subset_of_all_categories():
