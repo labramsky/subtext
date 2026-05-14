@@ -88,19 +88,6 @@ an expert-annotated Reddit dataset.
 > *Proceedings of EACL 2021*, pages 1336-1350.
 > https://aclanthology.org/2021.eacl-main.114/
 
-> Hartvigsen, T., Gabriel, S., Palangi, H., Sap, M., Ray, D., & Kamar, E. (2022).
-> ToxiGen: A Large-Scale Machine-Generated Dataset for Adversarial and Implicit
-> Hate Speech Detection. *Proceedings of ACL 2022*.
-> https://arxiv.org/abs/2203.09509
-
-> Confident AI. DeepEval: The LLM Evaluation Framework.
-> https://deepeval.com/docs/metrics-bias
-
-> Vetagiri, A., Pakray, P., & Das, A. (2025). A deep dive into automated sexism detection
-> using fine-tuned deep learning and large language models.
-> *Engineering Applications of Artificial Intelligence*, 145, 110167.
-> https://doi.org/10.1016/j.engappai.2025.110167
-
 > Gupta, A., Saini, N., & Tripathi, P.C. (2026). Leveraging semantic fusion and generative
 > reasoning using large language models for context-aware and explainable sexism detection.
 > *Engineering Applications of Artificial Intelligence*, 177, 114926.
