@@ -132,7 +132,15 @@ uv run inspect eval src/subtext/subtext.py --model anthropic/claude-sonnet-4-6 -
 uv run inspect eval src/subtext/subtext.py --model anthropic/claude-opus-4-7 --limit 200
 ```
 
-## Analyzing Results
+<img width="791" height="207" alt="running-sample" src="https://github.com/user-attachments/assets/c3237ba1-2ef0-4992-aa3f-f41c867deb07" />
+
+## Analysing Results
+
+View results in the Inspect viewer at `http://127.0.0.1:7575/`:
+
+```bash
+uv run inspect view
+```
 
 Per-vector accuracy breakdown for a single run:
 
@@ -144,12 +152,6 @@ Compare multiple runs side by side:
 
 ```bash
 uv run python -m subtext.analyse logs/run-a.eval logs/run-b.eval logs/run-c.eval
-```
-
-View results in the Inspect viewer at `http://127.0.0.1:7575/`:
-
-```bash
-uv run inspect view
 ```
 
 ## Running Tests
