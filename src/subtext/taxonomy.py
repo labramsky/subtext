@@ -19,19 +19,17 @@ Taxonomy levels:
 This benchmark collapses to a 12-way classification. Binary and category results
 are derived from the vector prediction.
 
-Category enum values match the ``label_vector`` field in the EDOS CSV exactly,
-so ``Category(row["label_vector"])`` works without a translation layer.
+Vector enum values match the ``label_vector`` field in the EDOS CSV exactly,
+so ``Vector(row["label_vector"])`` works without a translation layer.
 """
 
 from enum import StrEnum
 
 
-class Category(StrEnum):
+class Vector(StrEnum):
     """
-    12-way classification: 11 sexism vectors plus "none" (not sexist).
-
-    Values match the ``label_vector`` field in the EDOS CSV exactly.
-    Category membership is encoded in the first character of each vector name:
+    12-way vector classification. Values match the ``label_vector`` field in
+    the EDOS CSV exactly. Top-level category is encoded in the first character:
     "1." = threats, "2." = derogation, "3." = animosity, "4." = prejudiced.
     """
 
@@ -39,7 +37,7 @@ class Category(StrEnum):
     NONE = "none"
     """Content that is not sexist."""
 
-    # Category 1: Threats, plans to harm and incitement
+    # 1. Threats
     THREATS_OF_HARM = "1.1 threats of harm"
     """
     Expressing intent, willingness or desire to harm an individual woman or
@@ -54,7 +52,7 @@ class Category(StrEnum):
     e.g. "Raping her would put her in her place".
     """
 
-    # Category 2: Derogation
+    # 2. Derogation
     DESCRIPTIVE_ATTACKS = "2.1 descriptive attacks"
     """
     Characterising or describing women in a derogatory manner: negative
@@ -77,7 +75,7 @@ class Category(StrEnum):
     e.g. "Women are pigs".
     """
 
-    # Category 3: Animosity
+    # 3. Animosity
     GENDERED_SLURS = "3.1 casual use of gendered slurs, profanities, and insults"
     """
     Using gendered slurs or profanities casually, not to intentionally attack
@@ -108,7 +106,7 @@ class Category(StrEnum):
     understand the medical science for eliminating them!".
     """
 
-    # Category 4: Prejudiced Discussion
+    # 4. Prejudiced Discussions
     MISTREATMENT = "4.1 supporting mistreatment of individual women"
     """
     Expressing support for mistreatment of women as individuals — denying,
@@ -128,33 +126,33 @@ class Category(StrEnum):
 
 
 SEXIST_VECTORS: frozenset[str] = frozenset({
-    Category.THREATS_OF_HARM,
-    Category.INCITEMENT,
-    Category.DESCRIPTIVE_ATTACKS,
-    Category.AGGRESSIVE_ATTACKS,
-    Category.DEHUMANISING,
-    Category.GENDERED_SLURS,
-    Category.GENDER_STEREOTYPES,
-    Category.BACKHANDED_COMPLIMENTS,
-    Category.CONDESCENDING,
-    Category.MISTREATMENT,
-    Category.SYSTEMIC_DISCRIMINATION,
+    Vector.THREATS_OF_HARM,
+    Vector.INCITEMENT,
+    Vector.DESCRIPTIVE_ATTACKS,
+    Vector.AGGRESSIVE_ATTACKS,
+    Vector.DEHUMANISING,
+    Vector.GENDERED_SLURS,
+    Vector.GENDER_STEREOTYPES,
+    Vector.BACKHANDED_COMPLIMENTS,
+    Vector.CONDESCENDING,
+    Vector.MISTREATMENT,
+    Vector.SYSTEMIC_DISCRIMINATION,
 })
-"""All sexist Category values (excludes NONE)."""
+"""All sexist Vector values (excludes NONE)."""
 
 
 VECTOR_CATEGORY: dict[str, str] = {
-    Category.THREATS_OF_HARM: "1. threats, plans to harm and incitement",
-    Category.INCITEMENT: "1. threats, plans to harm and incitement",
-    Category.DESCRIPTIVE_ATTACKS: "2. derogation",
-    Category.AGGRESSIVE_ATTACKS: "2. derogation",
-    Category.DEHUMANISING: "2. derogation",
-    Category.GENDERED_SLURS: "3. animosity",
-    Category.GENDER_STEREOTYPES: "3. animosity",
-    Category.BACKHANDED_COMPLIMENTS: "3. animosity",
-    Category.CONDESCENDING: "3. animosity",
-    Category.MISTREATMENT: "4. prejudiced discussions",
-    Category.SYSTEMIC_DISCRIMINATION: "4. prejudiced discussions",
-    Category.NONE: "none",
+    Vector.THREATS_OF_HARM: "1. threats, plans to harm and incitement",
+    Vector.INCITEMENT: "1. threats, plans to harm and incitement",
+    Vector.DESCRIPTIVE_ATTACKS: "2. derogation",
+    Vector.AGGRESSIVE_ATTACKS: "2. derogation",
+    Vector.DEHUMANISING: "2. derogation",
+    Vector.GENDERED_SLURS: "3. animosity",
+    Vector.GENDER_STEREOTYPES: "3. animosity",
+    Vector.BACKHANDED_COMPLIMENTS: "3. animosity",
+    Vector.CONDESCENDING: "3. animosity",
+    Vector.MISTREATMENT: "4. prejudiced discussions",
+    Vector.SYSTEMIC_DISCRIMINATION: "4. prejudiced discussions",
+    Vector.NONE: "none",
 }
 """Maps each vector value to its category label string."""

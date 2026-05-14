@@ -27,15 +27,15 @@ from typing import Any
 from inspect_ai.dataset import Dataset, MemoryDataset, Sample
 from pydantic import BaseModel
 
-from subtext.taxonomy import Category
+from subtext.taxonomy import Vector
 
-VECTORS: list[str] = [c.value for c in Category]
-"""Ordered list of all 12 category values. Position determines the answer letter."""
+VECTORS: list[str] = [v.value for v in Vector]
+"""Ordered list of all 12 vector values. Position determines the answer letter."""
 
 LETTER_TO_VECTOR: dict[str, str] = dict(
     zip(ascii_uppercase[: len(VECTORS)], VECTORS)
 )
-"""Maps each answer letter (A–L) to its category value."""
+"""Maps each answer letter (A–L) to its vector value."""
 
 
 class SampleMetadata(BaseModel, frozen=True):
@@ -76,15 +76,20 @@ _CSV_PATH = Path(__file__).parent / "data" / "edos_labelled_aggregated.csv"
 
 
 def _load_csv() -> list[Sample]:
+    # Create Sample objs from csv
     samples: list[Sample] = []
+
     with open(_CSV_PATH, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
+            # Only use test rows (4000)
             if row["split"] != "test":
                 continue
+
             sexist = row["label_sexist"] == "sexist"
             category = row["label_category"] if sexist else None
-            vector = Category(row["label_vector"])
+            vector = Vector(row["label_vector"])
             letter = ascii_uppercase[VECTORS.index(vector)]
+
             samples.append(Sample(
                 id=row["rewire_id"],
                 input=row["text"],
@@ -102,7 +107,7 @@ def dataset() -> Dataset:
     Loads the EDOS test split from ``edos_labelled_aggregated.csv`` (4,000
     entries: 3,030 not sexist, 970 sexist across 12 vectors).
 
-    Basic usage in an Inspect task::
+    Basic usage in an Inspect task:
 
         from subtext.dataset import dataset
 

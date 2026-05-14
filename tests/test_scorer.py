@@ -1,12 +1,12 @@
 """
 Tests for subtext_scorer.
 
-Letter-to-category mapping (from CHOICES order):
+Letter-to-vector mapping (VECTORS order):
   A = none
   B = 1.1 threats of harm
-  D = 2.1 descriptive attacks      (derogation)
+  D = 2.1 descriptive attacks          (derogation)
   E = 2.2 aggressive and emotive attacks  (derogation)
-  H = 3.2 gender stereotypes       (animosity)
+  H = 3.2 gender stereotypes           (animosity)
 """
 
 import math

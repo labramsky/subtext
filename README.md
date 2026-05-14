@@ -38,7 +38,7 @@ and Prejudiced discussions**. These are then further broken down into vectors.
 Subtext collapses all categories into a single 12-way classification task: the model
 picks one label from the full list below.
 
-| Category | Vector | Benchmark label |
+| Category | Vector | Vector label |
 |----------|--------|-----------------|
 | Threats | Threats of harm | `1.1 threats of harm` |
 | Threats | Incitement and encouragement | `1.2 incitement and encouragement of harm` |
@@ -71,7 +71,7 @@ at three levels of granularity:
 
 The evaluation dataset is the EDOS test split: 4,000 Reddit and Gab entries,
 expert-annotated with the taxonomy above. 3,030 entries (75.8%) are not sexist;
-970 (24.2%) are sexist across the 11 vectors.
+970 (24.2%) are sexist across the 12 vectors.
 
 The dataset is licensed CC0 and available at
 [github.com/rewire-online/edos](https://github.com/rewire-online/edos).
@@ -104,17 +104,57 @@ an expert-annotated Reddit dataset.
 
 ## Setup
 
+Install depdendencies in virtual environment:
+
 ```bash
 uv sync --group dev
 ```
 
 ## Running Evaluations
 
+Run eval with specific model:
+
 ```bash
-uv run inspect eval src/subtext/subtext.py --model openai/gpt-4o
+uv run inspect eval src/subtext/subtext.py --model anthropic/claude-sonnet-4-6
+```
+
+Run a quick smoke test on a subset of samples with `--limit`:
+
+```bash
+uv run inspect eval src/subtext/subtext.py --model anthropic/claude-sonnet-4-6 --limit 20
+```
+
+Run multiple models sequentially (each gets its own log file):
+
+```bash
+uv run inspect eval src/subtext/subtext.py --model anthropic/claude-haiku-4-5-20251001 --limit 200 && \
+uv run inspect eval src/subtext/subtext.py --model anthropic/claude-sonnet-4-6 --limit 200 && \
+uv run inspect eval src/subtext/subtext.py --model anthropic/claude-opus-4-7 --limit 200
+```
+
+## Analyzing Results
+
+Per-vector accuracy breakdown for a single run:
+
+```bash
+uv run python -m subtext.analyse logs/your-run.eval
+```
+
+Compare multiple runs side by side:
+
+```bash
+uv run python -m subtext.analyse logs/run-a.eval logs/run-b.eval logs/run-c.eval
+```
+
+View results in the Inspect viewer at `http://127.0.0.1:7575/`:
+
+```bash
+uv run inspect view
 ```
 
 ## Running Tests
+
+Run all tests:
 
 ```bash
 uv run pytest

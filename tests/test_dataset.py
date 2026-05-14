@@ -1,7 +1,7 @@
 from string import ascii_uppercase
 
 from subtext.dataset import VECTORS, dataset
-from subtext.taxonomy import SEXIST_VECTORS, VECTOR_CATEGORY, Category
+from subtext.taxonomy import SEXIST_VECTORS, VECTOR_CATEGORY, Vector
 
 VALID_CATEGORIES = {VECTOR_CATEGORY[v] for v in SEXIST_VECTORS}
 
@@ -17,7 +17,7 @@ def test_target_and_sexist_agree():
         if sample.metadata["sexist"]:
             assert vector in SEXIST_VECTORS
         else:
-            assert vector == Category.NONE
+            assert vector == Vector.NONE
 
 
 def test_category_none_for_nonsexist():
