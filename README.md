@@ -1,34 +1,29 @@
 # Subtext
 
-An [Inspect AI](https://inspect.ai-safety-institute.org.uk/) benchmark for measuring
-how well large language models detect sexist content.
+Subtext is an [Inspect AI](https://inspect.ai-safety-institute.org.uk/) benchmark for measuring
+how well large language models detect and classify sexist content. 
 
-## What Subtext Does
-
-Run Subtext against any LLM to get a breakdown of how accurately it classifies
-sexist content, across 12 categories and at the binary level.
-
-The benchmark uses 4,000 Reddit and Gab posts from the
+Run any LLM against 4,000 Reddit and Gab posts from the
 [Explainable Detection of Online Sexism dataset (Kirk et al., 2023)](https://aclanthology.org/2023.semeval-1.305/),
-970 of which are annotated as sexist by trained expert women annotators.
+970 of which are annotated as sexist by trained expert women annotators, and get a
+breakdown of accuracy across 12 fine-grained categories and at the binary level.
 
 ## Why It Matters
 
-Most LLM safety benchmarks treat sexism as a binary: present or absent. That tells
-you whether a model can spot the obvious cases. It does not tell you which types of
-sexism it misses, or whether it handles subtle forms differently from explicit ones.
+Research has shown that fine-grained sexism classification is hard: specialist models
+trained specifically on the EDOS dataset score F1 0.87 on binary detection but drop to
+0.55 on identifying the correct fine-grained vector ([Kirk et al., 2023](https://aclanthology.org/2023.semeval-1.305/)),
+and more recent hybrid transformer architectures reach Macro-F1 0.56 on the same 12-class
+task ([Gupta et al., 2026](https://www.sciencedirect.com/science/article/abs/pii/S095219762601208X)),
+but this research focuses on training specialist models, not evaluating general-purpose LLMs.
 
-Subtext gives a more detailed picture across all 12 categories, from explicit threats
-of violence to subtle backhanded compliments. The EDOS dataset was used in a 2023
-research competition where teams built specialist models to detect sexism, trained 
-specifically on this data. Those models found binary detection (sexist or not)
-relatively manageable, but struggled significantly as the task got more granular.
-The best competition entry scored F1 0.87 on binary detection but only 0.55 on
-identifying which of the 12 vectors was present.
+Subtext is built on [Inspect AI](https://inspect.ai-safety-institute.org.uk/) and evaluates 
+any model's ability to detect fine-grained sexism with a single command. Run it across model families to compare
+detection capabilities directly, or across releases to track how they change over time.
 
-Subtext asks a different question: how do general-purpose LLMs like GPT-4 or Claude
-perform on the same task? You can run any model against the same test set and see 
-directly how it compares to those purpose-built systems — and which categories it struggles with most.
+Results are reported at three levels: **binary, category, and vector**, so you can see
+exactly where a model's classification breaks down as the task gets harder. Note that Subtext 
+reports accuracy rather than F1, so scores are not directly comparable to the research results above.
 
 ## Taxonomy
 
@@ -93,6 +88,24 @@ an expert-annotated Reddit dataset.
 > *Proceedings of EACL 2021*, pages 1336-1350.
 > https://aclanthology.org/2021.eacl-main.114/
 
+> Hartvigsen, T., Gabriel, S., Palangi, H., Sap, M., Ray, D., & Kamar, E. (2022).
+> ToxiGen: A Large-Scale Machine-Generated Dataset for Adversarial and Implicit
+> Hate Speech Detection. *Proceedings of ACL 2022*.
+> https://arxiv.org/abs/2203.09509
+
+> Confident AI. DeepEval: The LLM Evaluation Framework.
+> https://deepeval.com/docs/metrics-bias
+
+> Vetagiri, A., Pakray, P., & Das, A. (2025). A deep dive into automated sexism detection
+> using fine-tuned deep learning and large language models.
+> *Engineering Applications of Artificial Intelligence*, 145, 110167.
+> https://doi.org/10.1016/j.engappai.2025.110167
+
+> Gupta, A., Saini, N., & Tripathi, P.C. (2026). Leveraging semantic fusion and generative
+> reasoning using large language models for context-aware and explainable sexism detection.
+> *Engineering Applications of Artificial Intelligence*, 177, 114926.
+> https://doi.org/10.1016/j.engappai.2026.114926
+
 ## Dependencies
 
 - [Python](https://www.python.org/) >= 3.12
@@ -104,7 +117,7 @@ an expert-annotated Reddit dataset.
 
 ## Setup
 
-Install depdendencies in virtual environment:
+Install dependencies in virtual environment:
 
 ```bash
 uv sync --group dev
