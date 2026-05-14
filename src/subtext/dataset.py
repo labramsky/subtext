@@ -11,7 +11,7 @@ CSV -> Sample field mapping (edos_labelled_aggregated.csv)
     rewire_id      ->  id                      stable identifier per entry
     text           ->  input                   the text the model classifies
     label_vector   ->  target                  letter A–L corresponding to the
-                                               category's position in CHOICES
+                                               category's position in VECTORS
     label_sexist   ->  metadata["sexist"]      "sexist" → True
                                                "not sexist" → False
     label_category ->  metadata["category"]    category string for sexist entries
@@ -29,8 +29,13 @@ from pydantic import BaseModel
 
 from subtext.taxonomy import Category
 
-CHOICES: list[str] = [c.value for c in Category]
+VECTORS: list[str] = [c.value for c in Category]
 """Ordered list of all 12 category values. Position determines the answer letter."""
+
+LETTER_TO_VECTOR: dict[str, str] = dict(
+    zip(ascii_uppercase[: len(VECTORS)], VECTORS)
+)
+"""Maps each answer letter (A–L) to its category value."""
 
 
 class SampleMetadata(BaseModel, frozen=True):
@@ -53,7 +58,7 @@ class SampleMetadata(BaseModel, frozen=True):
 
     category: str | None
     """
-    Task B category label for sexist entries. None for non-sexist entries.
+    Category label for sexist entries. None for non-sexist entries.
     One of:
         "1. threats, plans to harm and incitement"
         "2. derogation"
@@ -79,12 +84,12 @@ def _load_csv() -> list[Sample]:
             sexist = row["label_sexist"] == "sexist"
             category = row["label_category"] if sexist else None
             vector = Category(row["label_vector"])
-            letter = ascii_uppercase[CHOICES.index(vector)]
+            letter = ascii_uppercase[VECTORS.index(vector)]
             samples.append(Sample(
                 id=row["rewire_id"],
                 input=row["text"],
                 target=letter,
-                choices=CHOICES,
+                choices=VECTORS,
                 metadata=_m(sexist=sexist, category=category),
             ))
     return samples
@@ -95,7 +100,7 @@ def dataset() -> Dataset:
     Return the Subtext evaluation dataset as an Inspect ``MemoryDataset``.
 
     Loads the EDOS test split from ``edos_labelled_aggregated.csv`` (4,000
-    entries: 3,030 not sexist, 970 sexist across 11 fine-grained vectors).
+    entries: 3,030 not sexist, 970 sexist across 12 vectors).
 
     Basic usage in an Inspect task::
 

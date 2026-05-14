@@ -7,18 +7,17 @@ Ground truth labels follow the three-level hierarchical taxonomy from:
     Explainable Detection of Online Sexism. Proceedings of SemEval-2023,
     pages 2193-2210. https://aclanthology.org/2023.semeval-1.305/
 
-The taxonomy covers 20,000 social media entries (Reddit and Gab), annotated by
-trained expert women annotators. The held-out test split (4,000 entries) is used
-for evaluation. Labels are mutually exclusive at each level.
+The full EDOS dataset covers ~20,000 social media entries (Reddit and Gab),
+annotated by trained expert women annotators. The held-out test split
+(4,000 entries) is used for evaluation. Labels are mutually exclusive at each level.
 
 Taxonomy levels:
-  Task A — binary: sexist vs. not sexist
-  Task B — 4 categories of sexism
-  Task C — 11 fine-grained vectors of sexism
+  Binary:     sexist vs. not sexist
+  Categories: 4 categories of sexism
+  Vectors:    12 vectors (11 sexist + "none" for not sexist)
 
-This benchmark collapses to a 12-way classification: the model picks one of the
-11 sexism vectors or "none" (not sexist). Task A and Task B results are derived
-from the Task C prediction.
+This benchmark collapses to a 12-way classification. Binary and category results
+are derived from the vector prediction.
 
 Category enum values match the ``label_vector`` field in the EDOS CSV exactly,
 so ``Category(row["label_vector"])`` works without a translation layer.
@@ -29,12 +28,11 @@ from enum import StrEnum
 
 class Category(StrEnum):
     """
-    12-way classification: 11 fine-grained sexism vectors plus "none".
+    12-way classification: 11 sexism vectors plus "none" (not sexist).
 
     Values match the ``label_vector`` field in the EDOS CSV exactly.
-    Task B category membership is encoded in the first character of each
-    vector name: "1." = threats, "2." = derogation, "3." = animosity,
-    "4." = prejudiced discussions.
+    Category membership is encoded in the first character of each vector name:
+    "1." = threats, "2." = derogation, "3." = animosity, "4." = prejudiced.
     """
 
     # Not sexist
@@ -142,15 +140,10 @@ SEXIST_VECTORS: frozenset[str] = frozenset({
     Category.MISTREATMENT,
     Category.SYSTEMIC_DISCRIMINATION,
 })
-"""
-The set of Category values that constitute sexist content.
-Derive binary classification from a sample's ``target`` field:
-
-    is_sexist = sample.target in SEXIST_VECTORS
-"""
+"""All sexist Category values (excludes NONE)."""
 
 
-CATEGORY_LABELS: dict[str, str] = {
+VECTOR_CATEGORY: dict[str, str] = {
     Category.THREATS_OF_HARM: "1. threats, plans to harm and incitement",
     Category.INCITEMENT: "1. threats, plans to harm and incitement",
     Category.DESCRIPTIVE_ATTACKS: "2. derogation",
@@ -164,4 +157,4 @@ CATEGORY_LABELS: dict[str, str] = {
     Category.SYSTEMIC_DISCRIMINATION: "4. prejudiced discussions",
     Category.NONE: "none",
 }
-"""Maps each vector Category to its Task B category label string."""
+"""Maps each vector value to its category label string."""

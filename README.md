@@ -24,7 +24,7 @@ research competition where teams built specialist models to detect sexism, train
 specifically on this data. Those models found binary detection (sexist or not)
 relatively manageable, but struggled significantly as the task got more granular.
 The best competition entry scored F1 0.87 on binary detection but only 0.55 on
-identifying which of the 11 specific vectors was present.
+identifying which of the 12 vectors was present.
 
 Subtext asks a different question: how do general-purpose LLMs like GPT-4 or Claude
 perform on the same task? You can run any model against the same test set and see 
@@ -111,7 +111,7 @@ uv sync --group dev
 ## Running Evaluations
 
 ```bash
-uv run inspect eval src/subtext/task.py --model openai/gpt-4o
+uv run inspect eval src/subtext/subtext.py --model openai/gpt-4o
 ```
 
 ## Running Tests

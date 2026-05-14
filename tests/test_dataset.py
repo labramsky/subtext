@@ -1,9 +1,9 @@
 from string import ascii_uppercase
 
-from subtext.dataset import CHOICES, dataset
-from subtext.taxonomy import CATEGORY_LABELS, SEXIST_VECTORS, Category
+from subtext.dataset import VECTORS, dataset
+from subtext.taxonomy import SEXIST_VECTORS, VECTOR_CATEGORY, Category
 
-VALID_CATEGORIES = {CATEGORY_LABELS[v] for v in SEXIST_VECTORS}
+VALID_CATEGORIES = {VECTOR_CATEGORY[v] for v in SEXIST_VECTORS}
 
 def test_dataset_loads():
     d = dataset()
@@ -13,7 +13,7 @@ def test_dataset_loads():
 def test_target_and_sexist_agree():
     d = dataset()
     for sample in d.samples:
-        vector = CHOICES[ascii_uppercase.index(sample.target)]
+        vector = VECTORS[ascii_uppercase.index(sample.target)]
         if sample.metadata["sexist"]:
             assert vector in SEXIST_VECTORS
         else:
